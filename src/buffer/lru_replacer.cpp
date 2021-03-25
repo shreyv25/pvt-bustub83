@@ -17,40 +17,39 @@ namespace bustub {
 LRUReplacer::LRUReplacer(size_t num_pages) {}
 
 LRUReplacer::~LRUReplacer() = default;
-//victim function is for getting value of lru block or frame
-bool LRUReplacer::Victim(frame_id_t *frame_id)
-{ std::lock_guard<std::mutex> lck(latch);
-  if(replacer.empty()) return false;//if we do not find frame with given frame id we will return false
-  *(frame_id)=lst.back();// otherwise we will return last element in list
+
+bool LRUReplacer::Victim(frame_id_t *frame_id) {
+  std::lock_guard<std::mutex> lck(latch);
+  if (replacer.empty()) return false;
+  *(frame_id) = lst.back();
   lst.pop_back();
-  replacer.erase(*(frame_id));//Then we will simply erase that perticular frame from list and map.
+  replacer.erase(*(frame_id));
   return true;
 }
-//this function is used for pinning memory block to not allow it to read or write back to disk
+
 void LRUReplacer::Pin(frame_id_t frame_id) {
   std::lock_guard<std::mutex> lck(latch);
-        auto temp = replacer.find(frame_id);//searching for block with that id.
-        if (temp == replacer.end()) {
-            return;//if not found return.
-        }
-        auto lst_iter = temp->second;
-        replacer.erase(temp);//otherwise simply erase that from list and map.
-        lst.erase(lst_iter);
+  auto temp = replacer.find(frame_id);
+  if (temp == replacer.end()) {
+    return;
+  }
+  auto lst_iter = temp->second;
+  replacer.erase(temp);
+  lst.erase(lst_iter);
 }
 
 void LRUReplacer::Unpin(frame_id_t frame_id) {
   std::lock_guard<std::mutex> lck(latch);
-      auto temp = replacer.find(frame_id);//searching for block with that id.
-      if (temp == replacer.end()) {
-          lst.emplace_front(frame_id);
-          replacer[frame_id]=lst.begin();//if not found simply push that at start in list and at frame_idth index in map.
-      } 
+  auto temp = replacer.find(frame_id);
+  if (temp == replacer.end()) {
+    lst.emplace_front(frame_id);
+    replacer[frame_id] = lst.begin();
+  }
 }
 
-size_t LRUReplacer::Size()
-{
-  std::lock_guard <std::mutex> lck(latch);
-  return replacer.size();//simply returning size of map.
- }
-
+size_t LRUReplacer::Size() {
+  std::lock_guard<std::mutex> lck(latch);
+  return replacer.size();
 }
+
+}  // namespace bustub
