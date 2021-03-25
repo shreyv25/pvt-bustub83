@@ -15,7 +15,7 @@
 #include <list>
 #include <mutex>  // NOLINT
 #include <vector>
-
+#include <unordered_map>
 #include "buffer/replacer.h"
 #include "common/config.h"
 
@@ -47,6 +47,10 @@ class LRUReplacer : public Replacer {
 
  private:
   // TODO(student): implement me!
+  std:: unordered_map<frame_id_t,std::list<frame_id_t>::iterator> replacer;//This is a map which will store details about frames...
+  std::list<frame_id_t> lst;//This is main list which will store last block refernces,
+  // we could use vector or array also but time complexity would have been of order n for some querys.
+  mutable std::mutex latch;//ds for using latches.
 };
 
 }  // namespace bustub
