@@ -44,10 +44,7 @@ void LRUReplacer::Unpin(frame_id_t frame_id) {
       if (temp == replacer.end()) {
           lst.emplace_front(frame_id);
           replacer[frame_id]=lst.begin();//if not found simply push that at start in list and at frame_idth index in map.
-      } else {
-          lst.splice(lst.begin(), lst, temp->second);
-          replacer[frame_id] = lst.begin();//if found then move the block from that mid position to starting index and for map same work is done.
-      }
+      } 
 }
 
 size_t LRUReplacer::Size()
@@ -56,4 +53,4 @@ size_t LRUReplacer::Size()
   return replacer.size();//simply returning size of map.
  }
 
-}  // namespace bustub
+}
