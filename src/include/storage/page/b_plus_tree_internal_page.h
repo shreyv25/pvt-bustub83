@@ -41,6 +41,7 @@ class BPlusTreeInternalPage : public BPlusTreePage {
   KeyType KeyAt(int index) const;
   void SetKeyAt(int index, const KeyType &key);
   int ValueIndex(const ValueType &value) const;
+  int KeyIndex(const KeyType &key)const;
   ValueType ValueAt(int index) const;
 
   ValueType Lookup(const KeyType &key, const KeyComparator &comparator) const;
@@ -48,19 +49,22 @@ class BPlusTreeInternalPage : public BPlusTreePage {
   int InsertNodeAfter(const ValueType &old_value, const KeyType &new_key, const ValueType &new_value);
   void Remove(int index);
   ValueType RemoveAndReturnOnlyChild();
+  void SetValueAt(int index, const ValueType &value);
 
   // Split and Merge utility methods
-  void MoveAllTo(BPlusTreeInternalPage *recipient, const KeyType &middle_key, BufferPoolManager *buffer_pool_manager);
+  void MoveAllTo(BPlusTreeInternalPage *recipient, int index_in_parent, BufferPoolManager *buffer_pool_manager);
   void MoveHalfTo(BPlusTreeInternalPage *recipient, BufferPoolManager *buffer_pool_manager);
-  void MoveFirstToEndOf(BPlusTreeInternalPage *recipient, const KeyType &middle_key,
+  void MoveFirstToEndOf(BPlusTreeInternalPage *recipient,int parent_index,
                         BufferPoolManager *buffer_pool_manager);
-  void MoveLastToFrontOf(BPlusTreeInternalPage *recipient, const KeyType &middle_key,
+  void MoveLastToFrontOf(BPlusTreeInternalPage *recipient, int parent_index,
                          BufferPoolManager *buffer_pool_manager);
+  void CopyAllFrom(MappingType *items, int size, BufferPoolManager *buffer_pool_manager);
 
  private:
-  void CopyNFrom(MappingType *items, int size, BufferPoolManager *buffer_pool_manager);
+ void CopyHalfFrom(MappingType *items, int size, BufferPoolManager *buffer_pool_manager);
+  //void CopyNFrom(MappingType *items, int size, BufferPoolManager *buffer_pool_manager);
   void CopyLastFrom(const MappingType &pair, BufferPoolManager *buffer_pool_manager);
-  void CopyFirstFrom(const MappingType &pair, BufferPoolManager *buffer_pool_manager);
+  void CopyFirstFrom(const MappingType &pair,int parent_index, BufferPoolManager *buffer_pool_manager);
   MappingType array[0];
 };
 }  // namespace bustub

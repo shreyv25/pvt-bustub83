@@ -12,22 +12,30 @@
 
 #pragma once
 
+#include<unordered_map>
 #include <list>
 #include <mutex>  // NOLINT
-#include <unordered_map>
 #include <vector>
+
 #include "buffer/replacer.h"
 #include "common/config.h"
 
 namespace bustub {
 
-
+/**
+ * LRUReplacer implements the lru replacement policy, which approximates the Least Recently Used policy.
+ */
 class LRUReplacer : public Replacer {
  public:
-
+  /**
+   * Create a new LRUReplacer.
+   * @param num_pages the maximum number of pages the LRUReplacer will be required to store
+   */
   explicit LRUReplacer(size_t num_pages);
 
- 
+  /**
+   * Destroys the LRUReplacer.
+   */
   ~LRUReplacer() override;
 
   bool Victim(frame_id_t *frame_id) override;
@@ -39,11 +47,10 @@ class LRUReplacer : public Replacer {
   size_t Size() override;
 
  private:
- 
-  std::unordered_map<frame_id_t, std::list<frame_id_t>::iterator>
-      replacer;               
-  std::list<frame_id_t> lst;  
-  mutable std::mutex latch;  
+  // TODO(student): implement me!
+    std:: unordered_map<frame_id_t, std::list<frame_id_t>::iterator> replacer;
+    std::list<frame_id_t> lst;
+    mutable std::mutex latch;
 };
 
 }  // namespace bustub
